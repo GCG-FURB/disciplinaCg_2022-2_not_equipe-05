@@ -215,9 +215,10 @@ namespace gcgcg
         criaSpline();
       }
       else if (e.Key == Key.I) {
-        qntPontosSpline -= 1;
-        criaSpline();
-        Console.WriteLine(qntPontosSpline);
+        if (qntPontosSpline > 0) {
+          qntPontosSpline -= 1;
+          criaSpline();
+        }
       }
 
 #if CG_Gizmo

@@ -17,8 +17,9 @@ namespace gcgcg
     private Ponto4D ptoCentral;
     private double raio;
     private bool visualizaCento;
-    public Ciurculo(char rotulo, Objeto paiRef, Ponto4D ptoCentro, double raio, int qtdePontos) : base(rotulo, paiRef)
+    public Ciurculo(char rotulo, Objeto paiRef, Ponto4D ptoCentro, double raio, int qtdePontos, bool desenhaCento = false) : base(rotulo, paiRef)
     {
+      this.visualizaCento = desenhaCento;
       this.ptoCentral = ptoCentro;
       this.raio = raio;
       for (int i = 0; i < qtdePontos; i++)
@@ -32,11 +33,8 @@ namespace gcgcg
       return Matematica.GerarPtosCirculo(angulo, this.raio) + this.ptoCentral;
     }
 
-    public bool distanciaEuclediana(Ponto4D pto) {
-      double distancia = Math.Sqrt(Math.Pow(pto.X - ptoCentral.X, 2) + Math.Pow(pto.Y - ptoCentral.Y, 2));
-      Console.WriteLine("- - - - - - - - -");
-      Console.WriteLine(distancia);
-      return distancia < raio;
+    public double distanciaEuclediana(Ponto4D pto) {
+      return Math.Sqrt(Math.Pow(pto.X - ptoCentral.X, 2) + Math.Pow(pto.Y - ptoCentral.Y, 2));
     }
     protected override void DesenharObjeto()
     {
@@ -47,6 +45,11 @@ namespace gcgcg
         GL.Vertex2(pto.X, pto.Y);
       }
       GL.End();
+      if (this.visualizaCento) {
+        GL.Begin(PrimitiveType.Points);
+        GL.Vertex2(this.ptoCentral.X, this.ptoCentral.Y);
+        GL.End();
+      }
 #elif CG_DirectX && !CG_OpenGL
     Console.WriteLine(" .. Coloque aqui o seu código em DirectX");
 #elif (CG_DirectX && CG_OpenGL) || (!CG_DirectX && !CG_OpenGL)
