@@ -43,6 +43,7 @@ namespace gcgcg
     private Ponto4D ptoCentral = new Ponto4D(200, 200, 0);
     private Privado_BBox obj_BBox;
     private SegReta obj_SegReta;
+    private int obj_circulo_raio = 30;
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
     private Privado_Circulo obj_Circulo;
@@ -51,7 +52,7 @@ namespace gcgcg
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      camera.xmin = -50; camera.xmax = 400; camera.ymin = -50; camera.ymax = 400;
+      camera.xmin = 0; camera.xmax = 600; camera.ymin = 0; camera.ymax = 600;
 
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
@@ -72,12 +73,10 @@ namespace gcgcg
       obj_Retangulo.PrimitivaTamanho = 3;
       objetosLista.Add(obj_Retangulo);
       objetoSelecionado = obj_Retangulo;
-      Console.WriteLine(ptoAngulo45);
-      Console.WriteLine(ptoAngulo225);
       obj_BBox = new Privado_BBox(ptoAngulo225.X, ptoAngulo225.Y, ptoAngulo225.Z, ptoAngulo45.X, ptoAngulo45.Y, ptoAngulo45.Z);
 
       objetoId = Utilitario.charProximo(objetoId);
-      obj_Circulo_Menor = new Ciurculo(objetoId, null, ptoCentral, 50, 36);
+      obj_Circulo_Menor = new Ciurculo(objetoId, null, ptoCentral, 50, 36, true);
       obj_Circulo_Menor.ObjetoCor.CorR = 0; obj_Circulo_Menor.ObjetoCor.CorG = 0; obj_Circulo_Menor.ObjetoCor.CorB =0;
       obj_Circulo_Menor.PrimitivaTipo = PrimitiveType.LineStrip;
       obj_Circulo_Menor.PrimitivaTamanho = 5;
@@ -134,34 +133,55 @@ namespace gcgcg
         }
       }
       else if (e.Key == Key.A) {
+        this.ptoCentral.X -= 1;
         if (obj_BBox.validaDentro(this.ptoCentral)) {
-          this.ptoCentral.X -= 1;
-          objetosLista.Remove(obj_Circulo_Menor);
-          objetoId = Utilitario.charProximo(objetoId);
-          obj_Circulo_Menor = new Ciurculo(objetoId, null, ptoCentral, 50, 36);
-          obj_Circulo_Menor.ObjetoCor.CorR = 0; obj_Circulo_Menor.ObjetoCor.CorG = 0; obj_Circulo_Menor.ObjetoCor.CorB =0;
-          obj_Circulo_Menor.PrimitivaTipo = PrimitiveType.LineStrip;
-          obj_Circulo_Menor.PrimitivaTamanho = 5;
-          objetosLista.Add(obj_Circulo_Menor);
+          desenhaCirculoMenor(255, 0, 255);
+        } else if (obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) > 149 && obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) <= 150) {
+          desenhaCirculoMenor(118, 249, 251);
+        } else if(obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) < 150) {
+          desenhaCirculoMenor(255, 255, 0);
+        }
+        else {
+          this.ptoCentral.X += 1;
+        }
+      } 
+      else if (e.Key == Key.W) {
+        this.ptoCentral.Y += 1;
+        if (obj_BBox.validaDentro(this.ptoCentral)) {
+          desenhaCirculoMenor(255, 0, 255);
+        } else if (obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) > 149 && obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) <= 150) {
+          desenhaCirculoMenor(118, 249, 251);
+        } else if(obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) < 150) {
+          desenhaCirculoMenor(255, 255, 0);
+        }
+        else {
+          this.ptoCentral.Y -= 1;
         }
       }
       else if (e.Key == Key.D) {
+        this.ptoCentral.X += 1;
         if (obj_BBox.validaDentro(this.ptoCentral)) {
-          Console.WriteLine(ptoCentral);
-          this.ptoCentral.X += 1;
-          Console.WriteLine(ptoCentral);
-          Console.WriteLine("# # # # # # # # # # # #");
-          if (obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral)){
-            this.ptoCentral.X -= 1;
-          } else {
-            objetosLista.Remove(obj_Circulo_Menor);
-            objetoId = Utilitario.charProximo(objetoId);
-            obj_Circulo_Menor = new Ciurculo(objetoId, null, ptoCentral, 50, 36);
-            obj_Circulo_Menor.ObjetoCor.CorR = 0; obj_Circulo_Menor.ObjetoCor.CorG = 0; obj_Circulo_Menor.ObjetoCor.CorB =0;
-            obj_Circulo_Menor.PrimitivaTipo = PrimitiveType.LineStrip;
-            obj_Circulo_Menor.PrimitivaTamanho = 5;
-            objetosLista.Add(obj_Circulo_Menor);
-          }
+          desenhaCirculoMenor(255, 0, 255);
+        } else if (obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) > 149 && obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) <= 150) {
+          desenhaCirculoMenor(118, 249, 251);
+        } else if(obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) < 150) {
+          desenhaCirculoMenor(255, 255, 0);
+        }
+        else {
+          this.ptoCentral.X -= 1;
+        }
+      }
+      else if (e.Key == Key.S) {
+        this.ptoCentral.Y -= 1;
+        if (obj_BBox.validaDentro(this.ptoCentral)) {
+          desenhaCirculoMenor(255, 0, 255);
+        } else if (obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) > 149 && obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) <= 150) {
+          desenhaCirculoMenor(118, 249, 251);
+        } else if(obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) < 150) {
+          desenhaCirculoMenor(255, 255, 0);
+        }
+        else {
+          this.ptoCentral.Y += 1;
         }
       }
 #if CG_Gizmo
@@ -178,11 +198,48 @@ namespace gcgcg
     protected override void OnMouseMove(MouseMoveEventArgs e)
     {
       mouseX = e.Position.X; mouseY = 600 - e.Position.Y; // Inverti eixo Y
+      Ponto4D move_mouse = new Ponto4D(mouseX, mouseY);
+      /*if (obj_BBox.validaDentro(move_mouse)) {
+          objetosLista.Remove(obj_Circulo_Menor);
+          objetoId = Utilitario.charProximo(objetoId);
+          obj_Circulo_Menor = new Ciurculo(objetoId, null, ptoCentral, 50, 36, true);
+          obj_Circulo_Menor.ObjetoCor.CorR = 0; obj_Circulo_Menor.ObjetoCor.CorG = 0; obj_Circulo_Menor.ObjetoCor.CorB =0;
+          obj_Circulo_Menor.PrimitivaTipo = PrimitiveType.LineStrip;
+          obj_Circulo_Menor.PrimitivaTamanho = 5;
+          objetosLista.Add(obj_Circulo_Menor);
+          obj_Retangulo.ObjetoCor.CorR = 255;obj_Retangulo.ObjetoCor.CorG = 0;obj_Retangulo.ObjetoCor.CorB = 255;
+        } else if (obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) == 150) {
+                    Console.WriteLine("Raio");
+          obj_Retangulo.ObjetoCor.CorR = 0;obj_Retangulo.ObjetoCor.CorG = 0;obj_Retangulo.ObjetoCor.CorB = 0;
+        } else if (obj_Circulo_Maior.distanciaEuclediana(this.ptoCentral) < 150){
+                    Console.WriteLine("entre bbob e raio");
+          objetosLista.Remove(obj_Circulo_Menor);
+          objetoId = Utilitario.charProximo(objetoId);
+          obj_Circulo_Menor = new Ciurculo(objetoId, null, ptoCentral, 50, 36, true);
+          obj_Circulo_Menor.ObjetoCor.CorR = 0; obj_Circulo_Menor.ObjetoCor.CorG = 0; obj_Circulo_Menor.ObjetoCor.CorB =0;
+          obj_Circulo_Menor.PrimitivaTipo = PrimitiveType.LineStrip;
+          obj_Circulo_Menor.PrimitivaTamanho = 5;
+          objetosLista.Add(obj_Circulo_Menor);
+          obj_Retangulo.ObjetoCor.CorR = 255;obj_Retangulo.ObjetoCor.CorG = 255;obj_Retangulo.ObjetoCor.CorB = 0;
+        } else {
+          Console.WriteLine("Não entrei lá!");
+        }*/
       if (mouseMoverPto && (objetoSelecionado != null))
       {
         objetoSelecionado.PontosUltimo().X = mouseX;
         objetoSelecionado.PontosUltimo().Y = mouseY;
       }
+    }
+
+    private void desenhaCirculoMenor(byte corR, byte corG, byte corB ) {
+      objetosLista.Remove(obj_Circulo_Menor);
+      objetoId = Utilitario.charProximo(objetoId);
+      obj_Circulo_Menor = new Ciurculo(objetoId, null, ptoCentral, 50, 36, true);
+      obj_Circulo_Menor.ObjetoCor.CorR = 0; obj_Circulo_Menor.ObjetoCor.CorG = 0; obj_Circulo_Menor.ObjetoCor.CorB =0;
+      obj_Circulo_Menor.PrimitivaTipo = PrimitiveType.LineStrip;
+      obj_Circulo_Menor.PrimitivaTamanho = 5;
+      objetosLista.Add(obj_Circulo_Menor);
+      obj_Retangulo.ObjetoCor.CorR = corR;obj_Retangulo.ObjetoCor.CorG = corG;obj_Retangulo.ObjetoCor.CorB = corB;
     }
 
 #if CG_Gizmo

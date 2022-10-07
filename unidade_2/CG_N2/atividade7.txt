@@ -1,0 +1,17 @@
+desenhar 
+    circulo menor - ponto Centro e um raio
+    Circulo maior - ponto centro e raio 
+    quadrado - precisa de 2 pontos o ponto inferior e superior no circulo seria o angulo 45 e 225
+
+Definir pontos e ligar com segmentos de reta
+
+deslocamento/mover
+    somar o valor do ponto central do circulo menor
+    calculo para distancia entre dois pontos = raiz (x2 - x1)2 + (y2 - y1)2
+    Validar o quadrado com o BBOX onde o BBOX é o quadrado desenhado
+
+Função do mouse usar a atividade "nao usar" como exemplo.
+
+
+
+atividade 6 - linestrip
