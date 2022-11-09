@@ -119,7 +119,7 @@ namespace gcgcg
       {
         if (objetoNovo != null)
         {
-          objetoNovo.PontosRemoverUltimo();   // N3-Exe6: "truque" para deixar o rastro
+          //objetoNovo.PontosRemoverUltimo();   // N3-Exe6: "truque" para deixar o rastro
           objetoSelecionado = objetoNovo;
           objetoNovo = null;
         }
@@ -172,6 +172,39 @@ namespace gcgcg
           objetoSelecionado.RotacaoZBBox(-10);
         else if (e.Key == Key.Number9)
           objetoSelecionado = null;                     // desmacar objeto selecionado
+        else if (e.Key == Key.S){
+        if(objetoSelecionado.PrimitivaTipo == PrimitiveType.LineLoop){
+        objetoSelecionado.PrimitivaTipo = PrimitiveType.LineStrip;
+        }else
+        objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
+        }
+        else if (e.Key == Key.G){
+        objetoSelecionado.ObjetoCor.CorG = 255; 
+        objetoSelecionado.ObjetoCor.CorR = 0; 
+        objetoSelecionado.ObjetoCor.CorB = 0; 
+         
+        }
+         else if (e.Key == Key.R){
+        objetoSelecionado.ObjetoCor.CorG = 0; 
+        objetoSelecionado.ObjetoCor.CorR = 255; 
+        objetoSelecionado.ObjetoCor.CorB = 0; 
+         
+        }
+         else if (e.Key == Key.B){
+        objetoSelecionado.ObjetoCor.CorG = 0; 
+        objetoSelecionado.ObjetoCor.CorR = 0; 
+        objetoSelecionado.ObjetoCor.CorB = 255; 
+         
+        }
+        else if(e.Key == Key.A){
+          foreach (ObjetoGeometria objeto in objetosLista)
+          {
+            Console.WriteLine(objeto.BBox.validaDentro(new Ponto4D(mouseX,mouseY,0)));
+            if(objeto.BBox.validaDentro(new Ponto4D(mouseX,mouseY,0))){
+              objetoSelecionado = objeto;
+            }
+          }
+        }
         else
           Console.WriteLine(" __ Tecla não implementada.");
       }
@@ -212,7 +245,6 @@ namespace gcgcg
   {
     static void Main(string[] args)
     {
-      ToolkitOptions.Default.EnableHighResolution = false;
       Mundo window = Mundo.GetInstance(600, 600);
       window.Title = "CG_N3";
       window.Run(1.0 / 60.0);

@@ -17,8 +17,8 @@ namespace gcgcg
     public PrimitiveType PrimitivaTipo { get => primitivaTipo; set => primitivaTipo = value; }
     private float primitivaTamanho = 1;
     public float PrimitivaTamanho { get => primitivaTamanho; set => primitivaTamanho = value; }
-    private BBox bBox = new BBox();
-    public BBox BBox { get => bBox; set => bBox = value; }
+    private Privado_BBox bBox = new Privado_BBox();
+    public Privado_BBox BBox { get => bBox; set => bBox = value; }
     private List<Objeto> objetosLista = new List<Objeto>();
 
     private Transformacao4D matriz = new Transformacao4D();
