@@ -119,10 +119,11 @@ namespace gcgcg
       {
         if (objetoNovo != null)
         {
-          //objetoNovo.PontosRemoverUltimo();   // N3-Exe6: "truque" para deixar o rastro
+          objetoNovo.PontosRemoverUltimo();   // N3-Exe6: "truque" para deixar o rastro
           objetoSelecionado = objetoNovo;
           objetoNovo = null;
         }
+        
       }
       else if (e.Key == Key.Space)
       {
@@ -130,15 +131,23 @@ namespace gcgcg
         {
           objetoId = Utilitario.charProximo(objetoId);
           objetoNovo = new Poligono(objetoId, null);
+          if(objetoSelecionado != null){
+            objetoSelecionado.FilhoAdicionar(objetoNovo);
+          }else{
           objetosLista.Add(objetoNovo);
+          }
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));  // N3-Exe6: "troque" para deixar o rastro
+          
         }
         else
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
+          
+          
       }
       else if (objetoSelecionado != null)
-      {
+      { 
+        
         if (e.Key == Key.M)
           Console.WriteLine(objetoSelecionado.Matriz);
         else if (e.Key == Key.P)
