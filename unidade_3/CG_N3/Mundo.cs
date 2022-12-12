@@ -44,14 +44,6 @@ namespace gcgcg
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
-      objetoId = Utilitario.charProximo(objetoId);
-      objetoNovo = new Poligono(objetoId, null);
-      objetosLista.Add(objetoNovo);
-      objetoNovo.PontosAdicionar(new Ponto4D( 50,  50));
-      objetoNovo.PontosAdicionar(new Ponto4D(350,  50));
-      objetoNovo.PontosAdicionar(new Ponto4D(350, 350));
-      objetoNovo.PontosAdicionar(new Ponto4D( 50, 350));
-      objetoSelecionado = objetoNovo;
       objetoNovo = null;
 
 #if CG_Privado
@@ -101,7 +93,29 @@ namespace gcgcg
 
     protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
     {
-      if (e.Key == Key.H)
+      if(e.Key == Key.A){
+        foreach (ObjetoGeometria objeto in objetosLista)
+        {
+          if(objeto.ValidaDentroObjeto(new Ponto4D(mouseX,mouseY,0))){
+            objetoSelecionado = objeto;
+            break;
+          }
+          objetoSelecionado = null;
+        }
+      }
+      else if (e.Key == Key.C) {
+        objetosLista.Remove(objetoSelecionado);
+        objetoSelecionado = null;
+      }
+      else if (e.Key == Key.V) {
+        objetoNovo = new Poligono(objetoSelecionado.getRotulo(), null);
+        Ponto4D pontoProximo = objetoSelecionado.getPontoProximo(new Ponto4D(mouseX,mouseY,0));
+        foreach (Ponto4D ponto in objetoSelecionado.getPontosLista(new Ponto4D(mouseX,mouseY,0)))
+        {
+          objetoNovo.PontosAdicionar(ponto);
+        }
+      }
+      else if (e.Key == Key.H)
         Utilitario.AjudaTeclado();
       else if (e.Key == Key.Escape)
         Exit();
@@ -119,7 +133,7 @@ namespace gcgcg
       {
         if (objetoNovo != null)
         {
-          //objetoNovo.PontosRemoverUltimo();   // N3-Exe6: "truque" para deixar o rastro
+          objetoNovo.PontosRemoverUltimo();
           objetoSelecionado = objetoNovo;
           objetoNovo = null;
         }
@@ -130,9 +144,13 @@ namespace gcgcg
         {
           objetoId = Utilitario.charProximo(objetoId);
           objetoNovo = new Poligono(objetoId, null);
-          objetosLista.Add(objetoNovo);
+          if(objetoSelecionado != null){
+            objetoSelecionado.FilhoAdicionar(objetoNovo);
+          }else{
+            objetosLista.Add(objetoNovo);
+          }
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
-          objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));  // N3-Exe6: "troque" para deixar o rastro
+          objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
         }
         else
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
@@ -196,15 +214,6 @@ namespace gcgcg
         objetoSelecionado.ObjetoCor.CorB = 255; 
          
         }
-        else if(e.Key == Key.A){
-          foreach (ObjetoGeometria objeto in objetosLista)
-          {
-            Console.WriteLine(objeto.BBox.validaDentro(new Ponto4D(mouseX,mouseY,0)));
-            if(objeto.BBox.validaDentro(new Ponto4D(mouseX,mouseY,0))){
-              objetoSelecionado = objeto;
-            }
-          }
-        }
         else
           Console.WriteLine(" __ Tecla não implementada.");
       }
@@ -245,6 +254,7 @@ namespace gcgcg
   {
     static void Main(string[] args)
     {
+      ToolkitOptions.Default.EnableHighResolution = false;
       Mundo window = Mundo.GetInstance(600, 600);
       window.Title = "CG_N3";
       window.Run(1.0 / 60.0);

@@ -130,5 +130,9 @@ namespace gcgcg
 
       matriz = matriz.MultiplicarMatriz(matrizGlobal);
     }
+
+    public char getRotulo() {
+      return this.rotulo;
+    }
   }
 }

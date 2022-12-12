@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using CG_Biblioteca;
+using System; 
 
 namespace gcgcg
 {
@@ -12,6 +13,8 @@ namespace gcgcg
     protected List<Ponto4D> pontosLista = new List<Ponto4D>();
 
     public ObjetoGeometria(char rotulo, Objeto paiRef) : base(rotulo, paiRef) { }
+
+    private Scan_Line scan_Line = new Scan_Line();
 
     protected override void DesenharGeometria()
     {
@@ -46,6 +49,43 @@ namespace gcgcg
     public void PontosAlterar(Ponto4D pto, int posicao)
     {
       pontosLista[posicao] = pto;
+    }
+
+    public bool ValidaDentroObjeto(Ponto4D ponto) {
+      if (BBox.validaDentro(ponto)) {
+        return scan_Line.validaDentro(ponto, pontosLista);
+      }
+      return false;
+    }
+
+    public List<Ponto4D> getPontosLista(Ponto4D ponto) {
+      double menorDistancia = Double.MaxValue;
+      Ponto4D pontoMaisProximo = null;
+      foreach (Ponto4D pontoLista in pontosLista)
+      {
+        double distancia = Math.Sqrt(Math.Pow(ponto.X - pontoLista.X, 2) + Math.Pow(ponto.Y - pontoLista.Y, 2));
+        if ( distancia < menorDistancia ) {
+          pontoMaisProximo = pontoLista;
+        }
+      }
+
+      pontosLista.Remove(pontoMaisProximo);
+      this.PontosAdicionar(pontoMaisProximo);
+      return this.pontosLista;
+    }
+
+    public Ponto4D getPontoProximo(Ponto4D ponto) {
+      double menorDistancia = Double.MaxValue;
+      Ponto4D pontoMaisProximo = null;
+      foreach (Ponto4D pontoLista in pontosLista)
+      {
+        double distancia = Math.Sqrt(Math.Pow(ponto.X - pontoLista.X, 2) + Math.Pow(ponto.Y - pontoLista.Y, 2));
+        if ( distancia < menorDistancia ) {
+          pontoMaisProximo = pontoLista;
+        }
+      }
+
+      return pontoMaisProximo;
     }
 
     public override string ToString()
