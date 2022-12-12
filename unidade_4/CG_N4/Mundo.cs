@@ -29,52 +29,71 @@ namespace gcgcg
     private char objetoId = '@';
     private String menuSelecao = "";
     private char menuEixoSelecao = 'z';
-    private float deslocamento = 0;
+    private float deslocamento = 2;
     private bool bBoxDesenhar = false;
-
+    private Random random = new Random();
 #if CG_Privado
     private Cilindro obj_Cilindro;
     private Esfera obj_Esfera;
     private Cone obj_Cone;
 #endif
     private Cubo obj_Cubo;
+    private Cubo tabuleiro;
+    private Cubo pacman;
+    private Cubo ponto;
+    private Cubo parede;
+    private List<Cubo> fantasmas = new List<Cubo>();
+    private int posicaoX = 1;
+    private int posicaoY = 1;
+    private int qntComida = 36;
+    //1 = Parede
+    //2 = Pacman
+    //3 = pontos
+    int[][] mapa = new[]
+        {
+            new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+            new[] { 1, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3, 3, 0, 1 },
+            new[] { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1 },
+            new[] { 1, 0, 1, 0, 0, 0, 3, 3, 3, 0, 1, 0, 1, 0, 1 },
+            new[] { 1, 3, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 3, 1 },
+            new[] { 1, 3, 1, 3, 1, 0, 3, 3, 3, 0, 1, 0, 1, 3, 1 },
+            new[] { 1, 3, 0, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1 },
+            new[] { 1, 3, 1, 3, 1, 3, 1, 0, 0, 4, 1, 0, 1, 3, 1 },
+            new[] { 1, 3, 1, 0, 1, 3, 1, 4, 0, 0, 1, 0, 1, 3, 1 },
+            new[] { 1, 0, 1, 0, 0, 3, 1, 0, 0, 4, 1, 0, 0, 0, 1 },
+            new[] { 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1 },
+            new[] { 1, 3, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 1 },
+            new[] { 1, 3, 1, 0, 0, 1, 1, 1, 1, 3, 1, 1, 1, 0, 1 },
+            new[] { 1, 3, 3, 3, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 1 },
+            new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        };
 
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
-
-      objetoId = Utilitario.charProximo(objetoId);
-      obj_Cubo = new Cubo(objetoId, null);
-      objetosLista.Add(obj_Cubo);
-      objetoSelecionado = obj_Cubo;
-
-#if CG_Privado  //FIXME: arrumar os outros objetos
-      objetoId = Utilitario.charProximo(objetoId);
-      obj_Cilindro = new Cilindro(objetoId, null);
-      obj_Cilindro.ObjetoCor.CorR = 177; obj_Cilindro.ObjetoCor.CorG = 166; obj_Cilindro.ObjetoCor.CorB = 136;
-      objetosLista.Add(obj_Cilindro);
-      obj_Cilindro.Translacao(2, 'x');
-
-      objetoId = Utilitario.charProximo(objetoId);
-      obj_Esfera = new Esfera(objetoId, null);
-      obj_Esfera.ObjetoCor.CorR = 177; obj_Esfera.ObjetoCor.CorG = 166; obj_Esfera.ObjetoCor.CorB = 136;
-      objetosLista.Add(obj_Esfera);
-      obj_Esfera.Translacao(4, 'x');
-
-      objetoId = Utilitario.charProximo(objetoId);
-      obj_Cone = new Cone(objetoId, null);
-      obj_Cone.ObjetoCor.CorR = 177; obj_Cone.ObjetoCor.CorG = 166; obj_Cone.ObjetoCor.CorB = 136;
-      objetosLista.Add(obj_Cone);
-      obj_Cone.Translacao(6, 'x');
-#endif
+      RestaurarCamera();
+      
+      this.desenhaTabuleiro();
 
       GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
       GL.Enable(EnableCap.DepthTest);
       GL.Enable(EnableCap.CullFace);
     }
+
+    private void RestaurarCamera()
+    {
+            Vector3 padrao = Vector3.Zero;
+            padrao.Y = 8;
+            padrao.Z = 18;
+            padrao.X = 10;
+            camera.Eye = padrao;
+    }
+
+    /*private ObjetoGeometria adicionarTabuleiro(int largura, int profundidade){
+      return tabuleiro;
+    }*/
     protected override void OnResize(EventArgs e)
     {
       base.OnResize(e);
@@ -109,6 +128,68 @@ namespace gcgcg
 
     protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
     {
+      if(this.qntComida != 0) 
+      {
+        if (e.Key == Key.S)
+        {
+          int proximaPosicao = mapa[posicaoX][posicaoY + 1];
+          if(proximaPosicao != 1) {
+            mapa[posicaoX][posicaoY + 1] = 2;
+            mapa[posicaoX][posicaoY] = 0;
+            posicaoY++;
+            if (proximaPosicao == 3) {
+              qntComida--;
+            }
+          }
+          this.moveFantasma();
+          this.desenhaTabuleiro();
+        }
+        else if (e.Key == Key.W)
+        {
+          int proximaPosicao = mapa[posicaoX][posicaoY - 1];
+          if(proximaPosicao != 1) {
+            mapa[posicaoX][posicaoY - 1] = 2;
+            mapa[posicaoX][posicaoY] = 0;
+            posicaoY--;
+            if (proximaPosicao == 3) {
+              qntComida--;
+            }
+          }
+          this.moveFantasma();
+          this.desenhaTabuleiro();
+        }
+        else if (e.Key == Key.D)
+        {
+          int proximaPosicao = mapa[posicaoX + 1][posicaoY];
+          if(proximaPosicao != 1) {
+            mapa[posicaoX + 1][posicaoY] = 2;
+            mapa[posicaoX][posicaoY] = 0;
+            posicaoX++;
+            if (proximaPosicao == 3) {
+              qntComida--;
+            }
+          }
+          this.desenhaTabuleiro();
+          this.moveFantasma();
+        }
+        else if (e.Key == Key.A)
+        {
+          Console.WriteLine(mapa);
+          int proximaPosicao = mapa[posicaoX-1][posicaoY];
+          if(proximaPosicao != 1) {
+            mapa[posicaoX-1][posicaoY] = 2;
+            mapa[posicaoX][posicaoY] = 0;
+            posicaoX--;
+            if (proximaPosicao == 3) {
+              qntComida--;
+            }
+            this.moveFantasma();
+            this.desenhaTabuleiro();
+          }
+        }
+      } else {
+        Console.WriteLine("Você venceu!");
+      }
       // Console.Clear(); //TODO: não funciona.
       if (e.Key == Key.H) Utilitario.AjudaTeclado();
       else if (e.Key == Key.Escape) Exit();
@@ -147,10 +228,99 @@ namespace gcgcg
 
       if (!(e.Key == Key.LShift)) //FIXME: não funciona.
         Console.WriteLine("__ " + menuSelecao + "[" + deslocamento + "]");
+
     }
 
     protected override void OnMouseMove(MouseMoveEventArgs e)
     {
+    }
+
+    private void moveFantasma() {
+      foreach (Cubo fantasma in fantasmas)
+      {
+        int numeroRandom = random.Next(1,3);
+        char eixo;
+        if (numeroRandom == 1) {
+          eixo = 'x';
+        } else {
+          eixo = 'z';
+        }
+        numeroRandom = random.Next(1, 3);
+        int valorTranslacacao;
+        if (numeroRandom == 1) {
+          valorTranslacacao = 1;
+        } else
+        valorTranslacacao = -1;
+
+        fantasma.Translacao(valorTranslacacao, eixo);
+      }
+    }
+
+    private void desenhaTabuleiro() {
+      objetosLista = new List<Objeto>();
+
+      objetoId = Utilitario.charProximo(objetoId);
+      tabuleiro = new Cubo(objetoId, null);
+      tabuleiro.ObjetoCor.CorR = 2; tabuleiro.ObjetoCor.CorG = 44; tabuleiro.ObjetoCor.CorB = 120;
+      tabuleiro.EscalaXYZBBox(15,1,15);
+      tabuleiro.Translacao(7.5,'x');
+      tabuleiro.Translacao(-0.5,'y');
+      tabuleiro.Translacao(7.5,'z');
+      objetosLista.Add(tabuleiro);
+      int transX = 0;
+      int transZ = 0;
+
+      for (int i = 0; i < mapa.Length; i++)
+      {
+        for (int j = 0; j < mapa[i].Length; j++)
+        {
+            if (mapa[i][j] == 1)
+            {
+                objetoId = Utilitario.charProximo(objetoId);
+                parede = new Cubo(objetoId, null);
+                parede.Translacao(transX+0.5,'x');
+                parede.Translacao(transZ+0.5,'z');
+                parede.ObjetoCor.CorR = 0;parede.ObjetoCor.CorG = 0;parede.ObjetoCor.CorB = 0;
+                objetoSelecionado = parede;
+                objetosLista.Add(parede);
+            }
+            if (mapa[i][j] == 2)
+            {
+                objetoId = Utilitario.charProximo(objetoId);
+                pacman = new Cubo(objetoId, null);
+                pacman.ObjetoCor.CorR = 255; pacman.ObjetoCor.CorG = 255; pacman.ObjetoCor.CorB = 0;
+                pacman.Translacao(transX+0.5,'x');
+                pacman.Translacao(transZ+0.5,'z');
+                objetoSelecionado = pacman;
+                objetosLista.Add(pacman);
+            }
+            if (mapa[i][j] == 3)
+            {
+                objetoId = Utilitario.charProximo(objetoId);
+                ponto = new Cubo(objetoId, null);
+                ponto.ObjetoCor.CorR = 255; ponto.ObjetoCor.CorG = 130; ponto.ObjetoCor.CorB = 130;
+                ponto.Translacao(transX+0.5,'x');
+                ponto.Translacao(transZ+0.5,'z');
+                objetoSelecionado = ponto;
+                objetosLista.Add(ponto);
+            }
+            if (mapa[i][j] == 4)
+            {
+                objetoId = Utilitario.charProximo(objetoId);
+                Cubo fantasma = new Cubo(objetoId, null);
+                fantasma.ObjetoCor.CorR = 255; fantasma.ObjetoCor.CorG = 255; fantasma.ObjetoCor.CorB = 255;
+                fantasma.Translacao(transX+0.5,'x');
+                fantasma.Translacao(transZ+0.5,'z');
+                objetoSelecionado = fantasma;
+                objetosLista.Add(fantasma);
+                fantasmas.Add(fantasma);
+            }
+            transZ += 1;
+        }
+        transZ = 0;
+        transX += 1;
+      }
+      objetoSelecionado = pacman;
     }
 
 #if CG_Gizmo
