@@ -80,9 +80,9 @@ namespace gcgcg
     private void RestaurarCamera()
     {
             Vector3 padrao = Vector3.Zero;
-            padrao.Y = 8;
-            padrao.Z = 18;
-            padrao.X = 10;
+            padrao.Y = 15;
+            padrao.Z = 25;
+            padrao.X = 17;
             camera.Eye = padrao;
     }
 
