@@ -30,11 +30,6 @@ namespace gcgcg
     private bool bBoxDesenhar = false;
     int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
     private Poligono objetoNovo = null;
-#if CG_Privado
-    private Retangulo obj_Retangulo;
-    private Privado_SegReta obj_SegReta;
-    private Privado_Circulo obj_Circulo;
-#endif
 
     protected override void OnLoad(EventArgs e)
     {
