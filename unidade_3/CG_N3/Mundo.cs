@@ -148,18 +148,10 @@ namespace gcgcg
           if(objetoSelecionado != null){
             objetoSelecionado.FilhoAdicionar(objetoNovo);
           }else{
-<<<<<<< HEAD
             objetosLista.Add(objetoNovo);
           }
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
-=======
-          objetosLista.Add(objetoNovo);
-          }
-          objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
-          objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));  // N3-Exe6: "troque" para deixar o rastro
-          
->>>>>>> 03b22f20ffe96d6dfc7742919fbcf523d9f24874
         }
         else
           objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
