@@ -32,12 +32,6 @@ namespace gcgcg
     private float deslocamento = 2;
     private bool bBoxDesenhar = false;
     private Random random = new Random();
-#if CG_Privado
-    private Cilindro obj_Cilindro;
-    private Esfera obj_Esfera;
-    private Cone obj_Cone;
-#endif
-    private Cubo obj_Cubo;
     private Cubo tabuleiro;
     private Cubo pacman;
     private Cubo ponto;
@@ -45,7 +39,8 @@ namespace gcgcg
     private List<Cubo> fantasmas = new List<Cubo>();
     private int posicaoX = 1;
     private int posicaoY = 1;
-    private int qntComida = 36;
+    private int qntComida = 0;
+    private int vida = 3;
     //1 = Parede
     //2 = Pacman
     //3 = pontos
@@ -128,26 +123,74 @@ namespace gcgcg
 
     protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
     {
-      if(this.qntComida != 0) 
+      if(this.qntComida != 0 && vida != 0) 
       {
         if (e.Key == Key.S)
         {
           int proximaPosicao = mapa[posicaoX][posicaoY + 1];
-          if(proximaPosicao != 1) {
+          if (proximaPosicao == 4) {
+            vida--;
+            mapa[posicaoX][posicaoY] = 0;
+            if (mapa[1][1] != 4) {
+              mapa[1][1] = 2;
+              posicaoX = 1;
+              posicaoY = 1;
+            } 
+            else if (mapa[1][13] != 4) {
+              mapa[1][13] = 2;
+              posicaoX = 1;
+              posicaoY = 13;
+            }
+            else if (mapa[13][1] != 4) {
+              mapa[13][1] = 2;
+              posicaoX = 13;
+              posicaoY = 1;
+            }
+            else if (mapa[13][13] != 4) {
+              mapa[13][13] = 2;
+              posicaoX = 13;
+              posicaoY = 13;
+            }
+          }
+          else if (proximaPosicao != 1) {
             mapa[posicaoX][posicaoY + 1] = 2;
             mapa[posicaoX][posicaoY] = 0;
             posicaoY++;
             if (proximaPosicao == 3) {
               qntComida--;
             }
-          }
+          } 
           this.moveFantasma();
           this.desenhaTabuleiro();
         }
         else if (e.Key == Key.W)
         {
           int proximaPosicao = mapa[posicaoX][posicaoY - 1];
-          if(proximaPosicao != 1) {
+          if (proximaPosicao == 4) {
+            vida--;
+            mapa[posicaoX][posicaoY] = 0;
+            if (mapa[1][1] != 4) {
+              mapa[1][1] = 2;
+              posicaoX = 1;
+              posicaoY = 1;
+            } 
+            else if (mapa[1][13] != 4) {
+              mapa[1][13] = 2;
+              posicaoX = 1;
+              posicaoY = 13;
+            }
+            else if (mapa[13][1] != 4) {
+              mapa[13][1] = 2;
+              posicaoX = 13;
+              posicaoY = 1;
+            }
+            else if (mapa[13][13] != 4) {
+              mapa[13][13] = 2;
+              posicaoX = 13;
+              posicaoY = 13;
+            }
+          }
+          else if(proximaPosicao != 1) {
             mapa[posicaoX][posicaoY - 1] = 2;
             mapa[posicaoX][posicaoY] = 0;
             posicaoY--;
@@ -161,7 +204,31 @@ namespace gcgcg
         else if (e.Key == Key.D)
         {
           int proximaPosicao = mapa[posicaoX + 1][posicaoY];
-          if(proximaPosicao != 1) {
+          if (proximaPosicao == 4) {
+            vida--;
+            mapa[posicaoX][posicaoY] = 0;
+            if (mapa[1][1] != 4) {
+              mapa[1][1] = 2;
+              posicaoX = 1;
+              posicaoY = 1;
+            } 
+            else if (mapa[1][13] != 4) {
+              mapa[1][13] = 2;
+              posicaoX = 1;
+              posicaoY = 13;
+            }
+            else if (mapa[13][1] != 4) {
+              mapa[13][1] = 2;
+              posicaoX = 13;
+              posicaoY = 1;
+            }
+            else if (mapa[13][13] != 4) {
+              mapa[13][13] = 2;
+              posicaoX = 13;
+              posicaoY = 13;
+            }
+          }
+          else if(proximaPosicao != 1) {
             mapa[posicaoX + 1][posicaoY] = 2;
             mapa[posicaoX][posicaoY] = 0;
             posicaoX++;
@@ -169,26 +236,52 @@ namespace gcgcg
               qntComida--;
             }
           }
-          this.desenhaTabuleiro();
           this.moveFantasma();
+          this.desenhaTabuleiro();
         }
         else if (e.Key == Key.A)
         {
-          Console.WriteLine(mapa);
           int proximaPosicao = mapa[posicaoX-1][posicaoY];
-          if(proximaPosicao != 1) {
+          if (proximaPosicao == 4) {
+            vida--;
+            mapa[posicaoX][posicaoY] = 0;
+            if (mapa[1][1] != 4) {
+              mapa[1][1] = 2;
+              posicaoX = 1;
+              posicaoY = 1;
+            } 
+            else if (mapa[1][13] != 4) {
+              mapa[1][13] = 2;
+              posicaoX = 1;
+              posicaoY = 13;
+            }
+            else if (mapa[13][1] != 4) {
+              mapa[13][1] = 2;
+              posicaoX = 13;
+              posicaoY = 1;
+            }
+            else if (mapa[13][13] != 4) {
+              mapa[13][13] = 2;
+              posicaoX = 13;
+              posicaoY = 13;
+            }
+          }
+          else if(proximaPosicao != 1) {
             mapa[posicaoX-1][posicaoY] = 2;
             mapa[posicaoX][posicaoY] = 0;
             posicaoX--;
             if (proximaPosicao == 3) {
               qntComida--;
             }
-            this.moveFantasma();
-            this.desenhaTabuleiro();
           }
+          this.moveFantasma();
+          this.desenhaTabuleiro();
         }
-      } else {
+      } else if (qntComida == 0) 
+      {
         Console.WriteLine("Você venceu!");
+      } else if(vida == 0) {
+        Console.WriteLine("Você perdeu!");
       }
       // Console.Clear(); //TODO: não funciona.
       if (e.Key == Key.H) Utilitario.AjudaTeclado();
@@ -238,21 +331,137 @@ namespace gcgcg
     private void moveFantasma() {
       foreach (Cubo fantasma in fantasmas)
       {
-        int numeroRandom = random.Next(1,3);
-        char eixo;
-        if (numeroRandom == 1) {
-          eixo = 'x';
+        int numeroRandom = random.Next(1, 10000);
+        if (numeroRandom <= 5000) {
+          if (numeroRandom <= 2500) {
+            int proximaPosicao = mapa[fantasma.posicaoX + 1][fantasma.posicaoY];
+            if (proximaPosicao == 2) 
+            {
+              vida--;
+              if (mapa[1][1] != 4) {
+                mapa[1][1] = 2;
+                posicaoX = 1;
+                posicaoY = 1;
+              } 
+              else if (mapa[1][13] != 4) {
+                mapa[1][13] = 2;
+                posicaoX = 1;
+                posicaoY = 13;
+              }
+              else if (mapa[13][1] != 4) {
+                mapa[13][1] = 2;
+                posicaoX = 13;
+                posicaoY = 1;
+              }
+              else if (mapa[13][13] != 4) {
+                mapa[13][13] = 2;
+                posicaoX = 13;
+                posicaoY = 13;
+              }
+            }
+            if (proximaPosicao != 1 && proximaPosicao != 4) 
+            {
+              mapa[fantasma.posicaoX][fantasma.posicaoY] = 0;
+              mapa[fantasma.posicaoX][fantasma.posicaoY] = 4;
+              fantasma.posicaoX++;
+            }
+          } else {
+            int proximaPosicao = mapa[fantasma.posicaoX - 1][fantasma.posicaoY];
+            if (proximaPosicao == 2) 
+            {
+              vida--;
+              if (mapa[1][1] != 4) {
+                mapa[1][1] = 2;
+                posicaoX = 1;
+                posicaoY = 1;
+              } 
+              else if (mapa[1][13] != 4) {
+                mapa[1][13] = 2;
+                posicaoX = 1;
+                posicaoY = 13;
+              }
+              else if (mapa[13][1] != 4) {
+                mapa[13][1] = 2;
+                posicaoX = 13;
+                posicaoY = 1;
+              }
+              else if (mapa[13][13] != 4) {
+                mapa[13][13] = 2;
+                posicaoX = 13;
+                posicaoY = 13;
+              }
+            }
+            if (proximaPosicao != 1 && proximaPosicao != 4) {
+              mapa[fantasma.posicaoX][fantasma.posicaoY] = 0;
+              mapa[fantasma.posicaoX - 1][fantasma.posicaoY] = 4;
+              fantasma.posicaoX--;
+            }
+          }
         } else {
-          eixo = 'z';
+          if (numeroRandom <= 7500) {
+            int proximaPosicao = mapa[fantasma.posicaoX][fantasma.posicaoY + 1];
+            if (proximaPosicao == 2) 
+            {
+              vida--;
+              if (mapa[1][1] != 4) {
+                mapa[1][1] = 2;
+                posicaoX = 1;
+                posicaoY = 1;
+              } 
+              else if (mapa[1][13] != 4) {
+                mapa[1][13] = 2;
+                posicaoX = 1;
+                posicaoY = 13;
+              }
+              else if (mapa[13][1] != 4) {
+                mapa[13][1] = 2;
+                posicaoX = 13;
+                posicaoY = 1;
+              }
+              else if (mapa[13][13] != 4) {
+                mapa[13][13] = 2;
+                posicaoX = 13;
+                posicaoY = 13;
+              }
+            }
+            if (proximaPosicao != 1 && proximaPosicao != 4) {
+              mapa[fantasma.posicaoX][fantasma.posicaoY] = 0;
+              mapa[fantasma.posicaoX][fantasma.posicaoY + 1] = 4;
+              fantasma.posicaoY++;
+            }
+          } else {
+            int proximaPosicao = mapa[fantasma.posicaoX][fantasma.posicaoY - 1];
+            if (proximaPosicao == 2) 
+            {
+              vida--;
+              if (mapa[1][1] != 4) {
+                mapa[1][1] = 2;
+                posicaoX = 1;
+                posicaoY = 1;
+              } 
+              else if (mapa[1][13] != 4) {
+                mapa[1][13] = 2;
+                posicaoX = 1;
+                posicaoY = 13;
+              }
+              else if (mapa[13][1] != 4) {
+                mapa[13][1] = 2;
+                posicaoX = 13;
+                posicaoY = 1;
+              }
+              else if (mapa[13][13] != 4) {
+                mapa[13][13] = 2;
+                posicaoX = 13;
+                posicaoY = 13;
+              }
+            }
+            if (proximaPosicao != 1 && proximaPosicao != 4) {
+              mapa[fantasma.posicaoX][fantasma.posicaoY] = 0;
+              mapa[fantasma.posicaoX][fantasma.posicaoY - 1] = 4;
+              fantasma.posicaoY--;
+            }
+          }
         }
-        numeroRandom = random.Next(1, 3);
-        int valorTranslacacao;
-        if (numeroRandom == 1) {
-          valorTranslacacao = 1;
-        } else
-        valorTranslacacao = -1;
-
-        fantasma.Translacao(valorTranslacacao, eixo);
       }
     }
 
@@ -269,7 +478,8 @@ namespace gcgcg
       objetosLista.Add(tabuleiro);
       int transX = 0;
       int transZ = 0;
-
+      qntComida = 0;
+      fantasmas = new List<Cubo>();
       for (int i = 0; i < mapa.Length; i++)
       {
         for (int j = 0; j < mapa[i].Length; j++)
@@ -303,6 +513,7 @@ namespace gcgcg
                 ponto.Translacao(transZ+0.5,'z');
                 objetoSelecionado = ponto;
                 objetosLista.Add(ponto);
+                qntComida++;
             }
             if (mapa[i][j] == 4)
             {
@@ -311,6 +522,8 @@ namespace gcgcg
                 fantasma.ObjetoCor.CorR = 255; fantasma.ObjetoCor.CorG = 255; fantasma.ObjetoCor.CorB = 255;
                 fantasma.Translacao(transX+0.5,'x');
                 fantasma.Translacao(transZ+0.5,'z');
+                fantasma.posicaoX = i;
+                fantasma.posicaoY = j;
                 objetoSelecionado = fantasma;
                 objetosLista.Add(fantasma);
                 fantasmas.Add(fantasma);
